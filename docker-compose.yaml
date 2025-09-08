@@ -23,13 +23,13 @@ services:
     environment:
       - CAMUNDA_CLIENT_MODE=self-managed
       - CAMUNDA_CLIENT_ZEEBE_GRPC-ADDRESS=http://zeebe:26500
-#      - CAMUNDA_CLIENT_ZEEBE_GATEWAYADDRESS=zeebe:26500
+      - CAMUNDA_CLIENT_ZEEBE_GATEWAYADDRESS=zeebe:26500
       - ZEEBE_CLIENT_SECURITY_PLAINTEXT=true
       - ZEEBE_CLIENT_CLOUD_ENABLED=false
       - LOGGING_LEVEL_IO_CAMUNDA_ZEEBE_CLIENT_IMPL=ERROR
       - MY_CUSTOM_VAR=500
     networks:
-      - camunda-platform  # Das gleiche Netzwerk wie Zeebe
+      - camunda-platform
     depends_on:
       zeebe:
         condition: service_healthy
