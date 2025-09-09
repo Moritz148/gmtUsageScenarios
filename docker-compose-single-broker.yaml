@@ -19,7 +19,7 @@ services:
       - camunda-platform
 
   experiment:
-    image: moritz148/measurementsgmt:c8
+    image: moritz148/measurementsgmt:c8-complex-long
     container_name: experiment
     environment:
       - CAMUNDA_CLIENT_MODE=self-managed
@@ -28,7 +28,7 @@ services:
       - ZEEBE_CLIENT_SECURITY_PLAINTEXT=true
 #      - ZEEBE_CLIENT_CLOUD_ENABLED=false
       - LOGGING_LEVEL_IO_CAMUNDA_ZEEBE_CLIENT_IMPL=ERROR
-      - MY_CUSTOM_VAR=500
+      - PROCESS_INSTANCES=500
     networks:
       - camunda-platform
     depends_on:

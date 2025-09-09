@@ -1,8 +1,8 @@
-name: Camunda 8 Messung - Single Broker
+name: Camunda 8 Messung - multiple Broker - benchmark
 author: Moritz Schwarz <moritz.schwarz@envite.de>
 description: usage_scenario for camunda8experiment
 
-compose-file: !include docker-compose.yaml
+compose-file: !include docker-compose-multiple-broker.yaml
 
 services:
   experiment:

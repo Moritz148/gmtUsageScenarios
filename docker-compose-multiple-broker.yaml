@@ -2,14 +2,14 @@ services:
 
   experiment:
     container_name: experiment
-    image: moritz148/measurementsgmt:c8
+    image: moritz148/measurementsgmt:c8-benchmark
     environment:
       - CAMUNDA_CLIENT_MODE=self-managed
       - CAMUNDA_CLIENT_ZEEBE_GRPCADDRESS=http://zeebe-gateway:26500
       - ZEEBE_CLIENT_SECURITY_PLAINTEXT=true
       - ZEEBE_CLIENT_CLOUD_ENABLED=false
       - LOGGING_LEVEL_IO_CAMUNDA_ZEEBE_CLIENT_IMPL=ERROR
-      - MY_CUSTOM_VAR=500
+      - PROCESS_INSTANCES=500
     depends_on:
       zeebe-gateway:
         condition: service_healthy
