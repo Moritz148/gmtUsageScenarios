@@ -1,4 +1,4 @@
-name: Camunda 8 Messung - Single Broker - complex long
+name: Camunda 8 Messung - Single Broker - benchmark
 author: Moritz Schwarz <moritz.schwarz@envite.de>
 description: usage_scenario for camunda8experiment
 
@@ -6,7 +6,6 @@ compose-file: !include docker-compose-single-broker.yaml
 
 services:
   experiment:
-    image: moritz148/measurementsgmt:c8-benchmark
     command: /bin/sh
 
 flow:
