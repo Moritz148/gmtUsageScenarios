@@ -6,6 +6,7 @@ compose-file: !include docker-compose-multiple-broker.yaml
 
 services:
   experiment:
+    image: moritz148/measurementsgmt:c8-benchmark
     command: /bin/sh
 
 flow:
