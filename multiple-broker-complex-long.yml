@@ -6,10 +6,22 @@ compose-file: !include docker-compose-multiple-broker.yaml
 
 services:
   experiment:
+    container_name: experiment
     image: moritz148/measurementsgmt:c8-complex-long
-    environment:
-      - PROCESS_INSTANCES=100
     command: /bin/sh
+    environment:
+      - CAMUNDA_CLIENT_MODE=self-managed
+      - CAMUNDA_CLIENT_ZEEBE_GRPCADDRESS=http://zeebe-gateway:26500
+      - ZEEBE_CLIENT_SECURITY_PLAINTEXT=true
+      - ZEEBE_CLIENT_CLOUD_ENABLED=false
+      - LOGGING_LEVEL_IO_CAMUNDA_ZEEBE_CLIENT_IMPL=ERROR
+      - PROCESS_INSTANCES=100
+    depends_on:
+      zeebe-gateway:
+        condition: service_healthy
+    restart: "no"
+    networks:
+      - camunda-platform
 
 flow:
   - name: experiment

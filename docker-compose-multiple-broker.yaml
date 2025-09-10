@@ -1,21 +1,5 @@
 services:
-  experiment:
-    container_name: experiment
-    image: moritz148/measurementsgmt:c8-benchmark
-#    command: /bin/sh
-    environment:
-      - CAMUNDA_CLIENT_MODE=self-managed
-      - CAMUNDA_CLIENT_ZEEBE_GRPCADDRESS=http://zeebe-gateway:26500
-      - ZEEBE_CLIENT_SECURITY_PLAINTEXT=true
-      - ZEEBE_CLIENT_CLOUD_ENABLED=false
-      - LOGGING_LEVEL_IO_CAMUNDA_ZEEBE_CLIENT_IMPL=ERROR
-      - PROCESS_INSTANCES=100
-    depends_on:
-      zeebe-gateway:
-        condition: service_healthy
-    restart: "no"
-    networks:
-      - camunda-platform
+
   zeebe0: # https://docs.camunda.io/docs/self-managed/platform-deployment/docker/#zeebe
     image: camunda/zeebe:8.6.9
     container_name: zeebe0
