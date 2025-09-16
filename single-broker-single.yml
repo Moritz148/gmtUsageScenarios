@@ -6,7 +6,7 @@ compose-file: !include docker-compose-single-broker.yaml
 
 services:
   experiment:
-    image: moritz148/measurementsgmt:c8-complex-long
+    image: moritz148/measurementsgmt:c8-single
     container_name: experiment
     command: /bin/sh
     environment:
