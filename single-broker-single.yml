@@ -16,7 +16,7 @@ services:
       - ZEEBE_CLIENT_SECURITY_PLAINTEXT=true
       #      - ZEEBE_CLIENT_CLOUD_ENABLED=false
       - LOGGING_LEVEL_IO_CAMUNDA_ZEEBE_CLIENT_IMPL=ERROR
-      - PROCESS_INSTANCES=1000
+      - PROCESS_INSTANCES=100
     networks:
       - camunda-platform
     depends_on:
