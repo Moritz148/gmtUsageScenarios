@@ -14,8 +14,7 @@ services:
       PROCESS_INSTANCES: 100
     restart: "no"
     depends_on:
-      camundaEngine:
-        condition: service_healthy
+      - camundaEngine
     networks:
       - camunda-platform
 
