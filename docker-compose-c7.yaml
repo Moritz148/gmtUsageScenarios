@@ -9,7 +9,7 @@ services:
       DB_USERNAME: camunda
       DB_PASSWORD: camunda
     healthcheck:
-      test: ["CMD", "curl", "-fs", "http://camundaEngine:8080/engine-rest/engine"]
+      test: ["CMD", "curl", "-fs", "http://camundaEngine:8080/engine-rest"]
       interval: 15s
       timeout: 5s
       retries: 20
