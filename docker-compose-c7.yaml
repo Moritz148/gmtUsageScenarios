@@ -10,9 +10,10 @@ services:
       DB_PASSWORD: camunda
     healthcheck:
       test: ["CMD", "curl", "-fs", "http://camundaEngine:8080/engine-rest/engine"]
-      interval: 20s
+      interval: 15s
       timeout: 5s
-      retries: 5
+      retries: 20
+      start_period: 150s
     depends_on:
       - db
     networks:
