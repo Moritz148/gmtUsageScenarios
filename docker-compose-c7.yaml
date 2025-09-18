@@ -11,9 +11,8 @@ services:
     healthcheck:
       test: ["CMD", "curl", "-fs", "http://localhost:8080/engine-rest/engine"]
       interval: 20s
-      timeout: 15s
-      retries: 20
-      start_period: 120s
+      timeout: 5s
+      retries: 5
     depends_on:
       - db
     networks:
@@ -31,6 +30,20 @@ services:
 #      - "5432:5432"
 #    volumes:
 #      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - camunda-platform
+
+  experiment:
+    container_name: experiment
+    image: moritz148/measurementsgmt:c7-benchmark
+#    command: /bin/sh
+    environment:
+      CAMUNDA_ENGINE_URL: http://camundaEngine:8080/engine-rest
+      PROCESS_INSTANCES: 100
+    restart: no
+    depends_on:
+      camundaEngine:
+        condition: service_healthy
     networks:
       - camunda-platform
 
