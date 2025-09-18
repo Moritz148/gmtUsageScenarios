@@ -22,11 +22,6 @@ services:
     restart: "no"
     networks:
       - camunda-platform
-#  experiment:
-##    image: moritz148/measurementsgmt:c8-benchmark
-##    environment:
-##      - PROCESS_INSTANCES=100
-
 
 flow:
   - name: experiment

@@ -22,7 +22,7 @@ services:
   db:
     image: postgres:17
     container_name: postgres-camunda
-    restart: always
+    restart: unless-stopped
     environment:
       POSTGRES_PASSWORD: camunda
       POSTGRES_USER: camunda
@@ -36,7 +36,6 @@ services:
 
 networks:
   camunda-platform:
-    driver: bridge
 
 #volumes:
 #  postgres_data:
