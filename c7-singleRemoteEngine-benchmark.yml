@@ -1,4 +1,4 @@
-name: Camunda  Messung - single Remote Engine - benchmark
+name: Camunda 7 Messung - single Remote Engine - benchmark
 author: Moritz Schwarz <moritz.schwarz@envite.de>
 description: usage_scenario for camunda7experiment
 
@@ -12,7 +12,7 @@ services:
     environment:
       CAMUNDA_ENGINE_URL: http://camundaEngine:8080/engine-rest
       PROCESS_INSTANCES: 100
-    restart: no
+    restart: "no"
     depends_on:
       camundaEngine:
         condition: service_healthy
