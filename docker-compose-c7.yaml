@@ -1,0 +1,41 @@
+services:
+  camundaEngine:
+    image: moritz148/measurementsgmt:c7-engine
+    container_name: camundaEngine
+    restart: unless-stopped
+    environment:
+      DB_DRIVER: org.postgresql.Driver
+      DB_URL: jdbc:postgresql://db:5432/camunda
+      DB_USERNAME: camunda
+      DB_PASSWORD: camunda
+    healthcheck:
+      test: ["CMD", "curl", "-fs", "http://camundaEngine:8080/engine-rest/engine"]
+      interval: 20s
+      timeout: 5s
+      retries: 5
+    depends_on:
+      - db
+    networks:
+      - camunda-platform
+
+  db:
+    image: postgres:17
+    container_name: postgres-camunda
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: camunda
+      POSTGRES_USER: camunda
+      POSTGRES_DB: camunda
+#    ports:
+#      - "5432:5432"
+#    volumes:
+#      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - camunda-platform
+
+networks:
+  camunda-platform:
+    driver: bridge
+
+#volumes:
+#  postgres_data:

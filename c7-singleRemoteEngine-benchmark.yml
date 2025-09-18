@@ -1,0 +1,29 @@
+name: Camunda  Messung - single Remote Engine - benchmark
+author: Moritz Schwarz <moritz.schwarz@envite.de>
+description: usage_scenario for camunda7experiment
+
+compose-file: !include docker-compose-c7.yaml
+
+services:
+  experiment:
+    container_name: experiment
+    image: moritz148/measurementsgmt:c7-benchmark
+    command: /bin/sh
+    environment:
+      CAMUNDA_ENGINE_URL: http://camundaEngine:8080/engine-rest
+      PROCESS_INSTANCES: 100
+    restart: no
+    depends_on:
+      camundaEngine:
+        condition: service_healthy
+    networks:
+      - camunda-platform
+
+flow:
+  - name: experiment
+    container: experiment
+    commands:
+      - type: console
+        command: java -jar demo.jar
+        log-stdout: true
+#        log-stderr: true
