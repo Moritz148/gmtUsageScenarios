@@ -2,7 +2,7 @@ name: camunda7experiment
 author: Moritz Schwarz <moritz.schwarz@envite.de>
 description: usage_scenario for camunda7experiment
 
-compose-file: !include docker-compose.yaml
+compose-file: !include c7-test.yaml
 
 services:
   experiment:
