@@ -40,7 +40,7 @@ services:
     environment:
       CAMUNDA_ENGINE_URL: http://camundaEngine:8080/engine-rest
       PROCESS_INSTANCES: 100
-    restart: no
+    restart: "no"
     depends_on:
       camundaEngine:
         condition: service_healthy
