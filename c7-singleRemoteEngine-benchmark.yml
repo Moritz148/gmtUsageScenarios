@@ -7,16 +7,16 @@ compose-file: !include docker-compose-c7.yaml
 services:
   experiment:
     container_name: experiment
-    image: moritz148/measurementsgmt:c7-benchmark
+#    image: moritz148/measurementsgmt:c7-benchmark
     command: /bin/sh
-    environment:
-      CAMUNDA_ENGINE_URL: http://camundaEngine:8080/engine-rest
-      PROCESS_INSTANCES: 100
-    restart: "no"
-    depends_on:
-      - camundaEngine
-    networks:
-      - camunda-platform
+#    environment:
+#      CAMUNDA_ENGINE_URL: http://camundaEngine:8080/engine-rest
+#      PROCESS_INSTANCES: 100
+#    restart: "no"
+#    depends_on:
+#      - camundaEngine
+#    networks:
+#      - camunda-platform
 
 flow:
   - name: experiment
