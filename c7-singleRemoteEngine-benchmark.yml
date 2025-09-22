@@ -6,7 +6,7 @@ compose-file: !include docker-compose-c7.yaml
 
 services:
   experiment:
-    container_name: experiment
+#    container_name: experiment
 #    image: moritz148/measurementsgmt:c7-benchmark
     command: /bin/sh
 #    environment:
