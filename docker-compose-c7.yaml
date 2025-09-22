@@ -1,6 +1,6 @@
 services:
   camundaEngine:
-    image: moritz148/measurementsgmt:c7-engine
+    image: moritz148/measurementsgmt:c7-engine-test
 #    image: moritz148/camunda7experiment:engine
     container_name: camundaEngine
     restart: "unless-stopped"
