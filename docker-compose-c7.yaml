@@ -8,7 +8,7 @@ services:
 #     - "8080:8080"
     healthcheck:
 #      test: ["CMD", "curl", "-fs", "http://localhost:8080/engine-rest/engine"]
-      test: [ "CMD-SHELL", "timeout 15 bash -c '</dev/tcp/localhost/8080' || exit 1" ]
+      test: [ "CMD-SHELL", "timeout 15 bash -c '</dev/tcp/127.0.0.1/8080' || exit 1" ]
 
       #      test: ["CMD-SHELL", "sleep 15 && curl -fs http://camundaEngine:8080/engine-rest/engine || exit 1"]
       interval: 30s
@@ -16,7 +16,7 @@ services:
       retries: 10
       start_period: 60s
     environment:
-      JAVA_OPTS: "-Xms512m -Xmx1g"
+      _JAVA_OPTIONS: "-Xms512m -Xmx1g"
       DB_DRIVER: org.postgresql.Driver
       DB_URL: jdbc:postgresql://db:5432/camunda
       DB_USERNAME: camunda
