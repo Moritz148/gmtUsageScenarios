@@ -1,0 +1,27 @@
+services:
+  engine:
+    image: moritz148/camunda7experiment:engine
+    container_name: engine
+    restart: "unless-stopped"
+    healthcheck:
+      test: ["CMD", "curl", "-fs", "http://engine:8080/engine-rest/engine"]
+      interval: 20s
+      timeout: 5s
+      retries: 5
+    networks:
+      - camunda-platform
+
+  experiment:
+    image: moritz148/camunda7experiment:benchmark
+    container_name: experiment
+    restart: "no"
+    depends_on:
+      engine:
+        condition: service_healthy
+    networks:
+      - camunda-platform
+
+
+networks:
+  camunda-platform:
+    driver: bridge
