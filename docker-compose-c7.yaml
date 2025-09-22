@@ -3,7 +3,7 @@ services:
     image: moritz148/measurementsgmt:c7-engine
 #    image: moritz148/camunda7experiment:engine
     container_name: camundaEngine
-    restart: "unless-stopped"
+    restart: "no"
 #    ports:
 #     - "8080:8080"
     healthcheck:
@@ -39,8 +39,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-#    ports:
-#      - "5432:5432"
+    ports:
+      - "5432:5432"
 #    volumes:
 #      - postgres_data:/var/lib/postgresql/data
     networks:
