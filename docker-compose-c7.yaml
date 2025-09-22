@@ -2,16 +2,16 @@ services:
   camundaEngine:
     image: moritz148/measurementsgmt:c7-engine
     container_name: camundaEngine
-    restart: unless-stopped
-    ports:
-     - "8080:8080"
+    restart: "unless-stopped"
+#    ports:
+#     - "8080:8080"
     environment:
       DB_DRIVER: org.postgresql.Driver
       DB_URL: jdbc:postgresql://db:5432/camunda
       DB_USERNAME: camunda
       DB_PASSWORD: camunda
     healthcheck:
-      test: ["CMD", "curl", "-fs", "http://localhost:8080/engine-rest/engine"]
+      test: ["CMD", "curl", "-fs", "http://camundaEngine:8080/engine-rest/engine"]
       interval: 20s
       timeout: 15s
       retries: 5
