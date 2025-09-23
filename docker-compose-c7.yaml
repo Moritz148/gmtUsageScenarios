@@ -9,7 +9,7 @@ services:
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/camunda
 #      - SPRING_DATASOURCE_USERNAME=camunda
-#      - SPRING_DATASOURCE_PASSWORD=camunda
+      - SPRING_DATASOURCE_PASSWORD=camunda
 #      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.postgresql.Driver
     healthcheck:
       test: ["CMD", "curl", "-fs", "http://camundaEngine:8080/engine-rest/engine"]
