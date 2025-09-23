@@ -7,10 +7,10 @@ services:
 #    ports:
 #     - "8080:8080"
     environment:
-      - spring.datasource.url=jdbc:postgresql://postgres:5432/camunda
-      - spring.datasource.username=camunda
-      - spring.datasource.password=camunda
-      - spring.datasource.driver-class-name=org.postgresql.Driver
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/camunda
+#      - SPRING_DATASOURCE_USERNAME=camunda
+#      - SPRING_DATASOURCE_PASSWORD=camunda
+#      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.postgresql.Driver
     healthcheck:
       test: ["CMD", "curl", "-fs", "http://camundaEngine:8080/engine-rest/engine"]
       interval: 10s
