@@ -29,7 +29,7 @@ services:
   postgres:
     image: postgres:17
     container_name: postgres-camunda
-    restart: "unless-stopped"
+    restart: "no"
     environment:
       POSTGRES_PASSWORD: camunda
       POSTGRES_USER: camunda
