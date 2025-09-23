@@ -11,7 +11,7 @@ services:
       - spring.datasource.username=camunda
       - spring.datasource.password=camunda
       - spring.datasource.driver-class-name=org.postgresql.Driver
-      - db.schema.update=true
+      - spring.camunda.bpm.database.schema-update=true
     healthcheck:
       test: ["CMD", "curl", "-fs", "http://camundaEngine:8080/engine-rest/engine"]
       interval: 10s
