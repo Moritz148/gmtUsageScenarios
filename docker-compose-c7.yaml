@@ -7,15 +7,13 @@ services:
 #    ports:
 #     - "8080:8080"
     environment:
-      DB_DRIVER: org.postgresql.Driver
-      DB_URL: jdbc:postgresql://postgres:5432/camunda
-      DB_USERNAME: camunda
-      DB_PASSWORD: camunda
+      - spring.datasource.url=jdbc:postgresql://postgres:5432/camunda
+      - spring.datasource.username=camunda
+      - spring.datasource.password=camunda
+      - spring.datasource.driver-class-name=org.postgresql.Driver
+      - db.schema.update=true
     healthcheck:
       test: ["CMD", "curl", "-fs", "http://camundaEngine:8080/engine-rest/engine"]
-
-#      test: [ "CMD-SHELL", "sleep 15 && timeout 5 bash -c '</dev/tcp/127.0.0.1/8080' || exit 1" ]
-#      test: ["CMD-SHELL", "sleep 15 && curl -fs http://camundaEngine:8080/engine-rest/engine || exit 1"]
       interval: 10s
       timeout: 20s
       retries: 10
@@ -34,6 +32,7 @@ services:
       POSTGRES_PASSWORD: camunda
       POSTGRES_USER: camunda
       POSTGRES_DB: camunda
+
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U camunda -d camunda || exit 1" ]
       interval: 10s
