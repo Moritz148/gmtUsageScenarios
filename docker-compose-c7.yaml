@@ -21,7 +21,7 @@ services:
       retries: 10
       start_period: 30s
     depends_on:
-      db:
+      postgres:
         condition: service_healthy
     networks:
       - camunda-platform
