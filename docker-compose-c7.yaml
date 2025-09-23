@@ -8,25 +8,25 @@ services:
 #     - "8080:8080"
     environment:
       DB_DRIVER: org.postgresql.Driver
-      DB_URL: jdbc:postgresql://127.0.0.1:5432/camunda
+      DB_URL: jdbc:postgresql://postgres:5432/camunda
       DB_USERNAME: camunda
       DB_PASSWORD: camunda
     healthcheck:
-      test: ["CMD", "curl", "-fs", "http://camundaEngine:8080/engine-rest/engine"]
+      test: ["CMD", "curl", "-fs", "camundaEngine:8080/engine-rest/engine"]
 
 #      test: [ "CMD-SHELL", "sleep 15 && timeout 5 bash -c '</dev/tcp/127.0.0.1/8080' || exit 1" ]
 #      test: ["CMD-SHELL", "sleep 15 && curl -fs http://camundaEngine:8080/engine-rest/engine || exit 1"]
       interval: 10s
       timeout: 20s
       retries: 10
-      start_period: 60s
+      start_period: 30s
     depends_on:
       db:
         condition: service_healthy
     networks:
       - camunda-platform
 
-  db:
+  postgres:
     image: postgres:17
     container_name: postgres-camunda
     restart: "unless-stopped"
