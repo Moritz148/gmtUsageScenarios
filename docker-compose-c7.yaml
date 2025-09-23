@@ -6,12 +6,12 @@ services:
     restart: "no"
 #    ports:
 #     - "8080:8080"
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/camunda
-      - SPRING_DATASOURCE_USERNAME=camunda
-      - SPRING_DATASOURCE_PASSWORD=camunda
-      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.postgresql.Driver
-      - SPRING_CAMUNDA_BPM_DATABASE_SCHEMA_UPDATE=true
+#    environment:
+#      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/camunda
+#      - SPRING_DATASOURCE_USERNAME=camunda
+#      - SPRING_DATASOURCE_PASSWORD=camunda
+#      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.postgresql.Driver
+#      - SPRING_CAMUNDA_BPM_DATABASE_SCHEMA_UPDATE=true
     healthcheck:
       test: ["CMD", "curl", "-fs", "http://camundaEngine:8080/engine-rest/engine"]
       interval: 10s
