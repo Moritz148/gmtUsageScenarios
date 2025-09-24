@@ -51,7 +51,7 @@ services:
 #    command: /bin/sh
     environment:
       CAMUNDA_ENGINE_URL: http://camundaEngine:8080/engine-rest
-      PROCESS_INSTANCES: 1000
+      PROCESS_INSTANCES: 10000
     restart: "no"
     depends_on:
       camundaEngine:
