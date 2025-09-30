@@ -16,7 +16,7 @@ services:
       #      - ZEEBE_CLIENT_CLOUD_ENABLED=false
       - ZEEBE_CLIENT_REQUEST_TIMEOUT=300s
       - LOGGING_LEVEL_IO_CAMUNDA_ZEEBE_CLIENT_IMPL=ERROR
-      - PROCESS_INSTANCES=50000
+      - PROCESS_INSTANCES=5000
     networks:
       - camunda-platform
     depends_on:
