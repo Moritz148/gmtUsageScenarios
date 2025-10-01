@@ -5,7 +5,7 @@ description: usage_scenario for camunda8experiment
 compose-file: !include docker-compose-single-broker.yaml
 services:
   experiment:
-    image: moritz148/measurementsgmt:c8-benchmark
+    image: moritz148/measurementsgmt:c8-benchmark-parallel
     container_name: experiment
     command: /bin/sh
     environment:
