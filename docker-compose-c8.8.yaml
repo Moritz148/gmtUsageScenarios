@@ -18,6 +18,7 @@ services:
       - "8088:8080"
     environment:
       - JAVA_TOOL_OPTIONS="-XX:+PrintFlagsFinal"
+      - SPRING_PROFILES_ACTIVE=broker
     mem_limit: 1g
     restart: always
     healthcheck:
@@ -89,6 +90,23 @@ services:
       - elastic:/usr/share/elasticsearch/data
     networks:
       - camunda
+  experiment:
+    image: moritz148/measurementsgmt:c8.8-benchmark
+    container_name: experiment
+    environment:
+      - CAMUNDA_CLIENT_MODE=self-managed
+      - CAMUNDA_CLIENT_GRPC_ADDRESS=http://orchestration:26500
+      - CAMUNDA_CLIENT_REST_ADDRESS=http://orchestration:8080
+      #      - CAMUNDA_CLIENT_ZEEBE_GATEWAYADDRESS=zeebe:26500
+      - ZEEBE_CLIENT_SECURITY_PLAINTEXT=true
+      #      - ZEEBE_CLIENT_CLOUD_ENABLED=false
+      - LOGGING_LEVEL_IO_CAMUNDA_ZEEBE_CLIENT_IMPL=ERROR
+    networks:
+      - camunda
+    depends_on:
+      orchestration:
+        condition: service_healthy
+
 
 volumes:
   zeebe:
