@@ -74,10 +74,10 @@ services:
     restart: unless-stopped
     healthcheck:
       test: [ "CMD-SHELL", "curl -f http://localhost:9200/_cat/health | grep -q green" ]
-      interval: 10s
+      interval: 20s
       retries: 30
-      start_period: 90s
-      timeout: 1s
+      start_period: 120s
+      timeout: 10s
     volumes:
       - elastic:/usr/share/elasticsearch/data
     networks:
