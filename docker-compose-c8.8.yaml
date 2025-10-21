@@ -67,13 +67,14 @@ services:
       - logger.org.elasticsearch.deprecation="OFF"
     restart: unless-stopped
     healthcheck:
-      test: [ "CMD-SHELL", "curl -f http://127.0.0.1:9200/_cat/health | grep -q green" ]
+      test: [ "CMD-SHELL", "curl -f http://localhost:9200/_cat/health | grep -q green" ]
       interval: 20s
       retries: 30
       start_period: 120s
       timeout: 10s
     networks:
       - camunda
+
   experiment:
     image: moritz148/measurementsgmt:c8.8-benchmark
     container_name: experiment
