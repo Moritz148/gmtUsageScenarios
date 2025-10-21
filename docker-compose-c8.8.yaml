@@ -17,11 +17,7 @@ services:
       - CAMUNDA_SYSTEM_IOTHREADCOUNT=3
       - CAMUNDA_SECURITY_AUTHENTICATION_UNPROTECTEDAPI=true
       - CAMUNDA_DATA_SECONDARYSTORAGE_ELASTICSEARCH_URL=http://elasticsearch:9200
-#      - camunda.security.initialization.users[0].username=demo
-#      - camunda.security.initialization.users[0].password=demo
-#      - camunda.security.initialization.users[0].name=demo
-#      - camunda.security.initialization.users[0].email=demo@demo.com
-#      - camunda.security.initialization.defaultRoles.admin.users=demo
+
     restart: always
     healthcheck:
       test: ["CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/127.0.0.1/9600 && echo -e \"GET /actuator/health/status HTTP/1.1\r\nHost: localhost\r\n\r\n\" >&3 && head -n 1 <&3'"]
