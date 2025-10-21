@@ -52,19 +52,23 @@ services:
       - camunda
     depends_on:
       orchestration:
-        # Wait for orchestration service to be healthy, otherwise we get a lot of noisy logs from connection errors
         condition: service_healthy
 
   elasticsearch: # https://hub.docker.com/_/elasticsearch
     image: docker.elastic.co/elasticsearch/elasticsearch:8.17.5
     container_name: elasticsearch
     environment:
-      - discovery.type=single-node
-      - xpack.security.enabled=false
+#      - discovery.type=single-node
+      - ES_SETTING_DISCOVERY_TYPE=single-node
+      - ES_SETTING_XPACK_SECURITY_ENABLED=false
+#      - xpack.security.enabled=false
+
       # allow running with low disk space
-      - cluster.routing.allocation.disk.threshold_enabled=false
+#      - cluster.routing.allocation.disk.threshold_enabled=false
+      - ES_SETTING_CLUSTER_ROUTING_ALLOCATION_DISK_THRESHOLD__ENABLED=false
       # Disable noisy deprecation logs, see https://github.com/camunda/camunda/issues/26285
-      - logger.org.elasticsearch.deprecation="OFF"
+      - ES_SETTING_LOGGER_ORG_ELASTICSEARCH_DEPRECATION="OFF"
+#      - logger.org.elasticsearch.deprecation="OFF"
     restart: unless-stopped
     healthcheck:
       test: [ "CMD-SHELL", "curl -f http://localhost:9200/_cat/health | grep -q green" ]
