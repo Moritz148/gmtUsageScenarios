@@ -73,7 +73,7 @@ services:
       - logger.org.elasticsearch.deprecation="OFF"
     restart: unless-stopped
     healthcheck:
-      test: [ "CMD-SHELL", "curl -f http://localhost:9200/_cat/health | grep -q green" ]
+      test: [ "CMD-SHELL", "curl -f http://elasticsearch:9200/_cat/health | grep -q green" ]
       interval: 1s
       retries: 30
       start_period: 60s
