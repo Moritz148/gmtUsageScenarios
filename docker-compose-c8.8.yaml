@@ -28,8 +28,6 @@ services:
       interval: 1s
       retries: 30
       start_period: 30s
-    volumes:
-      - zeebe:/usr/local/zeebe/data
     networks:
       - camunda
     depends_on:
@@ -78,8 +76,6 @@ services:
       retries: 30
       start_period: 120s
       timeout: 10s
-    volumes:
-      - elastic:/usr/share/elasticsearch/data
     networks:
       - camunda
   experiment:
@@ -98,11 +94,6 @@ services:
     depends_on:
       orchestration:
         condition: service_healthy
-
-
-volumes:
-  zeebe:
-  elastic:
 
 networks:
   camunda:
