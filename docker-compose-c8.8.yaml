@@ -85,7 +85,7 @@ services:
     environment:
       - GRPC_ADDRESS=http://orchestration:26500
       - REST_ADDRESS=http://orchestration:8080
-      - PROCESS_INSTANCES=200
+      - PROCESS_INSTANCES=1000
     networks:
       - camunda
     depends_on:
