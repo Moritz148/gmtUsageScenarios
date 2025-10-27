@@ -73,7 +73,7 @@ services:
       - camunda
 
   experiment:
-    image: moritz148/measurementsgmt:c8.8-benchmark
+    image: moritz148/measurementsgmt:c8.8-single
     container_name: experiment
     environment:
       - GRPC_ADDRESS=http://orchestration:26500
