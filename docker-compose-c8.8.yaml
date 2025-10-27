@@ -83,14 +83,9 @@ services:
     image: moritz148/measurementsgmt:c8.8-benchmark
     container_name: experiment
     environment:
-      - CAMUNDA_CLIENT_MODE=self-managed
-      - CAMUNDA_CLIENT_GRPC_ADDRESS=http://orchestration:26500
-      - CAMUNDA_CLIENT_REST_ADDRESS=http://orchestration:8080
-      #      - CAMUNDA_CLIENT_ZEEBE_GATEWAYADDRESS=zeebe:26500
-      - ZEEBE_CLIENT_SECURITY_PLAINTEXT=true
-      #      - ZEEBE_CLIENT_CLOUD_ENABLED=false
-      - LOGGING_LEVEL_IO_CAMUNDA_ZEEBE_CLIENT_IMPL=ERROR
-      - PROCESS_INSTANCES=1000
+      - GRPC_ADDRESS=http://orchestration:26500
+      - REST_ADDRESS=http://orchestration:8080
+      - PROCESS_INSTANCES=200
     networks:
       - camunda
     depends_on:
