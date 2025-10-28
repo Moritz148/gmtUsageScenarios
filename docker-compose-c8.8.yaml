@@ -73,12 +73,12 @@ services:
       - camunda
 
   experiment:
-    image: moritz148/measurementsgmt:c8.8-complex-long
+    image: moritz148/measurementsgmt:c8.8-single
     container_name: experiment
     environment:
       - GRPC_ADDRESS=http://orchestration:26500
       - REST_ADDRESS=http://orchestration:8080
-      - PROCESS_INSTANCES=1000
+      - PROCESS_INSTANCES=5000
     networks:
       - camunda
     depends_on:
