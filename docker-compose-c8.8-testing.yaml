@@ -182,7 +182,7 @@ services:
     environment:
       - GRPC_ADDRESS=http://zeebe-1:26500
       - REST_ADDRESS=http://zeebe-1:8080
-      - PROCESS_INSTANCES=1000
+      - PROCESS_INSTANCES=200
     depends_on:
       zeebe-1:
         condition: service_healthy

@@ -101,7 +101,7 @@ services:
     environment:
       - GRPC_ADDRESS=http://zeebe:26500
       - REST_ADDRESS=http://zeebe:8080
-      - PROCESS_INSTANCES=1000
+      - PROCESS_INSTANCES=200
     networks:
       - camunda
     depends_on:
