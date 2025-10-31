@@ -9,21 +9,44 @@
 # This is a lightweight configuration with Orchestration (Zeebe + Operate + Tasklist), Connectors, and Elasticsearch
 # See docker-compose-full.yaml for a configuration that also includes Optimize, Identity, Keycloak, Web Modeler, and Console.
 services:
-  orchestration: # Consolidated Zeebe + Operate + Tasklist - https://docs.camunda.io/docs/self-managed/setup/deploy/other/docker/#zeebe
-    image: camunda/camunda:8.8.0
-    container_name: orchestration
-    environment:
-      - CAMUNDA_SYSTEM_CPUTHREADCOUNT=3
-      - CAMUNDA_SYSTEM_IOTHREADCOUNT=3
-      - CAMUNDA_SECURITY_AUTHENTICATION_UNPROTECTEDAPI=true
-      - CAMUNDA_DATA_SECONDARYSTORAGE_ELASTICSEARCH_URL=http://elasticsearch:9200
-
+  zeebe:
+    image: camunda/zeebe:8.8.0
+    container_name: zeebe
     restart: always
+    environment:
+      # --- Cluster-Konfiguration ---
+      - ZEEBE_BROKER_CLUSTER_CLUSTERSIZE=1
+      - ZEEBE_BROKER_CLUSTER_PARTITIONSCOUNT=1
+      - ZEEBE_BROKER_CLUSTER_REPLICATIONFACTOR=1
+      - ZEEBE_BROKER_CLUSTER_NODEID=0
+      - ZEEBE_BROKER_GATEWAY_ENABLE=true
+
+      # --- Thread-Konfiguration ---
+      - ZEEBE_BROKER_THREADS_CPUTHREADCOUNT=2
+      - ZEEBE_BROKER_THREADS_IOTHREADCOUNT=2
+
+      # --- Daten ---
+      - ZEEBE_BROKER_DATA_DIRECTORY=data
+      - ZEEBE_BROKER_DATA_SNAPSHOTPERIOD=15m
+      - ZEEBE_BROKER_DATA_LOGSEGMENTSIZE=128MB
+
+      # --- Security ---
+      - CAMUNDA_SECURITY_AUTHENTICATION_UNPROTECTEDAPI=true
+      - ZEEBE_BROKER_EXPORTERS_CAMUNDAEXPORTER_ARGS_CREATESCHEMA=false
+      - CAMUNDA_DATA_SECONDARYSTORAGE_ELASTICSEARCH_URL=http://elasticsearch:9200
+      - ZEEBE_BROKER_EXPORTERS_CAMUNDAEXPORTER_CLASSNAME=io.camunda.exporter.CamundaExporter
+
+
+#    ports:
+#      - "26500:26500"  # gRPC API (zbctl, Clients)
+#      - "9600:9600"    # Management API (Prometheus, Health)
+#    volumes:
+#      - ./zeebe_data:/usr/local/zeebe/data
     healthcheck:
-      test: ["CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/127.0.0.1/9600 && echo -e \"GET /actuator/health/status HTTP/1.1\r\nHost: localhost\r\n\r\n\" >&3 && head -n 1 <&3'"]
-      interval: 1s
-      retries: 30
-      start_period: 30s
+      test: [ "CMD-SHELL", "timeout 10s bash -c ':> /dev/tcp/127.0.0.1/9600' || exit 1" ]
+      interval: 20s
+      timeout: 20s
+      retries: 10
     networks:
       - camunda
     depends_on:
@@ -39,8 +62,8 @@ services:
       - management.endpoints.web.exposure.include=health,configprops
       - management.endpoint.health.probes.enabled=true
       - camunda.client.mode=self-managed
-      - camunda.client.grpc-address=http://orchestration:26500
-      - camunda.client.rest-address=http://orchestration:8080
+      - camunda.client.grpc-address=http://zeebe:26500
+      - camunda.client.rest-address=http://zeebe:8080
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:8080/actuator/health/readiness"]
@@ -51,7 +74,7 @@ services:
     networks:
       - camunda
     depends_on:
-      orchestration:
+      zeebe:
         condition: service_healthy
 
   elasticsearch: # https://hub.docker.com/_/elasticsearch
@@ -76,13 +99,13 @@ services:
     image: moritz148/measurementsgmt:c8.8-single
     container_name: experiment
     environment:
-      - GRPC_ADDRESS=http://orchestration:26500
-      - REST_ADDRESS=http://orchestration:8080
-      - PROCESS_INSTANCES=5000
+      - GRPC_ADDRESS=http://zeebe:26500
+      - REST_ADDRESS=http://zeebe:8080
+      - PROCESS_INSTANCES=1000
     networks:
       - camunda
     depends_on:
-      orchestration:
+      zeebe:
         condition: service_healthy
 
 networks:

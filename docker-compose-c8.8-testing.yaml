@@ -1,0 +1,190 @@
+networks:
+  camunda:
+
+services:
+  # -------------------------------------------------
+  # Broker 1 (Leader + Gateway)
+  # -------------------------------------------------
+  zeebe-1:
+    image: camunda/zeebe:8.8.0
+    container_name: zeebe-1
+    restart: always
+    environment:
+      # --- Cluster-Konfiguration ---
+      - ZEEBE_BROKER_CLUSTER_CLUSTERNAME=zeebe-cluster
+      - ZEEBE_BROKER_CLUSTER_CLUSTERSIZE=3
+      - ZEEBE_BROKER_CLUSTER_REPLICATIONFACTOR=3
+      - ZEEBE_BROKER_CLUSTER_PARTITIONSCOUNT=3
+      - ZEEBE_BROKER_CLUSTER_NODEID=0
+      - ZEEBE_BROKER_CLUSTER_INITIALCONTACTPOINTS=zeebe-1:26502,zeebe-2:26502,zeebe-3:26502
+
+      # --- Gateway (nur hier aktiv) ---
+      - ZEEBE_BROKER_GATEWAY_ENABLE=true
+      - ZEEBE_BROKER_GATEWAY_NETWORK_PORT=26500
+      - ZEEBE_BROKER_GATEWAY_NETWORK_HOST=0.0.0.0
+
+      # --- Netzwerk ---
+      - ZEEBE_BROKER_NETWORK_COMMANDAPI_PORT=26501
+      - ZEEBE_BROKER_NETWORK_INTERNALAPI_PORT=26502
+      - ZEEBE_BROKER_NETWORK_MONITORINGAPI_PORT=9600
+
+      # --- Threads ---
+      - ZEEBE_BROKER_THREADS_CPUTHREADCOUNT=2
+      - ZEEBE_BROKER_THREADS_IOTHREADCOUNT=2
+
+      # --- Daten ---
+      - ZEEBE_BROKER_DATA_DIRECTORY=data
+      - ZEEBE_BROKER_DATA_LOGSEGMENTSIZE=128MB
+      - ZEEBE_BROKER_DATA_SNAPSHOTPERIOD=15m
+
+      # --- Exporter ---
+      - ZEEBE_BROKER_EXPORTERS_CAMUNDAEXPORTER_CLASSNAME=io.camunda.exporter.CamundaExporter
+      - ZEEBE_BROKER_EXPORTERS_CAMUNDAEXPORTER_ARGS_CREATESCHEMA=false
+      - CAMUNDA_DATA_SECONDARYSTORAGE_ELASTICSEARCH_URL=http://elasticsearch:9200
+
+      # --- Security ---
+      - CAMUNDA_SECURITY_AUTHENTICATION_UNPROTECTEDAPI=true
+
+    healthcheck:
+      test: ["CMD-SHELL", "timeout 10s bash -c ':> /dev/tcp/127.0.0.1/9600' || exit 1"]
+      interval: 20s
+      timeout: 20s
+      retries: 10
+
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    networks:
+      - camunda
+
+  # -------------------------------------------------
+  # Broker 2
+  # -------------------------------------------------
+  zeebe-2:
+    image: camunda/zeebe:8.8.0
+    container_name: zeebe-2
+    restart: always
+    environment:
+      - ZEEBE_BROKER_CLUSTER_CLUSTERNAME=zeebe-cluster
+      - ZEEBE_BROKER_CLUSTER_CLUSTERSIZE=3
+      - ZEEBE_BROKER_CLUSTER_REPLICATIONFACTOR=3
+      - ZEEBE_BROKER_CLUSTER_PARTITIONSCOUNT=3
+      - ZEEBE_BROKER_CLUSTER_NODEID=1
+      - ZEEBE_BROKER_CLUSTER_INITIALCONTACTPOINTS=zeebe-1:26502,zeebe-2:26502,zeebe-3:26502
+
+      - ZEEBE_BROKER_GATEWAY_ENABLE=false
+
+      - ZEEBE_BROKER_NETWORK_COMMANDAPI_PORT=26501
+      - ZEEBE_BROKER_NETWORK_INTERNALAPI_PORT=26502
+      - ZEEBE_BROKER_NETWORK_MONITORINGAPI_PORT=9600
+
+      - ZEEBE_BROKER_THREADS_CPUTHREADCOUNT=2
+      - ZEEBE_BROKER_THREADS_IOTHREADCOUNT=2
+
+      - ZEEBE_BROKER_DATA_DIRECTORY=data
+      - ZEEBE_BROKER_DATA_LOGSEGMENTSIZE=128MB
+      - ZEEBE_BROKER_DATA_SNAPSHOTPERIOD=15m
+
+      - ZEEBE_BROKER_EXPORTERS_CAMUNDAEXPORTER_CLASSNAME=io.camunda.exporter.CamundaExporter
+      - ZEEBE_BROKER_EXPORTERS_CAMUNDAEXPORTER_ARGS_CREATESCHEMA=false
+      - CAMUNDA_DATA_SECONDARYSTORAGE_ELASTICSEARCH_URL=http://elasticsearch:9200
+
+      - CAMUNDA_SECURITY_AUTHENTICATION_UNPROTECTEDAPI=true
+    depends_on:
+      - zeebe-1
+    networks:
+      - camunda
+
+  # -------------------------------------------------
+  # Broker 3
+  # -------------------------------------------------
+  zeebe-3:
+    image: camunda/zeebe:8.8.0
+    container_name: zeebe-3
+    restart: always
+    environment:
+      - ZEEBE_BROKER_CLUSTER_CLUSTERNAME=zeebe-cluster
+      - ZEEBE_BROKER_CLUSTER_CLUSTERSIZE=3
+      - ZEEBE_BROKER_CLUSTER_REPLICATIONFACTOR=3
+      - ZEEBE_BROKER_CLUSTER_PARTITIONSCOUNT=3
+      - ZEEBE_BROKER_CLUSTER_NODEID=2
+      - ZEEBE_BROKER_CLUSTER_INITIALCONTACTPOINTS=zeebe-1:26502,zeebe-2:26502,zeebe-3:26502
+
+      - ZEEBE_BROKER_GATEWAY_ENABLE=false
+
+      - ZEEBE_BROKER_NETWORK_COMMANDAPI_PORT=26501
+      - ZEEBE_BROKER_NETWORK_INTERNALAPI_PORT=26502
+      - ZEEBE_BROKER_NETWORK_MONITORINGAPI_PORT=9600
+
+      - ZEEBE_BROKER_THREADS_CPUTHREADCOUNT=2
+      - ZEEBE_BROKER_THREADS_IOTHREADCOUNT=2
+
+      - ZEEBE_BROKER_DATA_DIRECTORY=data
+      - ZEEBE_BROKER_DATA_LOGSEGMENTSIZE=128MB
+      - ZEEBE_BROKER_DATA_SNAPSHOTPERIOD=15m
+
+      - ZEEBE_BROKER_EXPORTERS_CAMUNDAEXPORTER_CLASSNAME=io.camunda.exporter.CamundaExporter
+      - ZEEBE_BROKER_EXPORTERS_CAMUNDAEXPORTER_ARGS_CREATESCHEMA=false
+      - CAMUNDA_DATA_SECONDARYSTORAGE_ELASTICSEARCH_URL=http://elasticsearch:9200
+
+      - CAMUNDA_SECURITY_AUTHENTICATION_UNPROTECTEDAPI=true
+    depends_on:
+      - zeebe-1
+    networks:
+      - camunda
+
+  # -------------------------------------------------
+  # Connectors
+  # -------------------------------------------------
+  connectors:
+    image: camunda/connectors:8.8.0
+    container_name: connectors
+    restart: unless-stopped
+    environment:
+      - management.endpoints.web.exposure.include=health,configprops
+      - management.endpoint.health.probes.enabled=true
+      - camunda.client.mode=self-managed
+      - camunda.client.grpc-address=http://zeebe-1:26500
+      - camunda.client.rest-address=http://zeebe-1:8080
+    depends_on:
+      zeebe-1:
+        condition: service_healthy
+    networks:
+      - camunda
+
+  # -------------------------------------------------
+  # Elasticsearch
+  # -------------------------------------------------
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.17.5
+    container_name: elasticsearch
+    environment:
+      - ES_SETTING_DISCOVERY_TYPE=single-node
+      - ES_SETTING_XPACK_SECURITY_ENABLED=false
+      - ES_SETTING_CLUSTER_ROUTING_ALLOCATION_DISK_THRESHOLD__ENABLED=false
+      - ES_SETTING_LOGGER_ORG_ELASTICSEARCH_DEPRECATION="OFF"
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:9200/_cat/health | grep -q green" ]
+      interval: 20s
+      retries: 30
+      start_period: 120s
+      timeout: 10s
+    restart: unless-stopped
+    networks:
+      - camunda
+
+  # -------------------------------------------------
+  # Experiment (dein Worker)
+  # -------------------------------------------------
+  experiment:
+    image: moritz148/measurementsgmt:c8.8-single
+    container_name: experiment
+    environment:
+      - GRPC_ADDRESS=http://zeebe-1:26500
+      - REST_ADDRESS=http://zeebe-1:8080
+      - PROCESS_INSTANCES=1000
+    depends_on:
+      zeebe-1:
+        condition: service_healthy
+    networks:
+      - camunda
