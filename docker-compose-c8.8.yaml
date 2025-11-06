@@ -35,10 +35,10 @@ services:
       - ZEEBE_BROKER_EXPORTERS_CAMUNDAEXPORTER_ARGS_CREATESCHEMA=false
       - CAMUNDA_DATA_SECONDARYSTORAGE_ELASTICSEARCH_URL=http://elasticsearch:9200
       - ZEEBE_BROKER_EXPORTERS_CAMUNDAEXPORTER_CLASSNAME=io.camunda.exporter.CamundaExporter
+#      - ZEEBE_LOG_LEVEL=TRACE
 
-
-#    ports:
-#      - "26500:26500"  # gRPC API (zbctl, Clients)
+    ports:
+      - "26500:26500"  # gRPC API (zbctl, Clients)
 #      - "9600:9600"    # Management API (Prometheus, Health)
 #    volumes:
 #      - ./zeebe_data:/usr/local/zeebe/data
@@ -57,7 +57,7 @@ services:
   # Docs: https://docs.camunda.io/docs/self-managed/connectors-deployment/connectors-configuration/
   connectors:
     image: camunda/connectors:8.8.0
-    container_name: connectors
+    container_name: conn
     environment:
       - management.endpoints.web.exposure.include=health,configprops
       - management.endpoint.health.probes.enabled=true
@@ -79,7 +79,7 @@ services:
 
   elasticsearch: # https://hub.docker.com/_/elasticsearch
     image: docker.elastic.co/elasticsearch/elasticsearch:8.17.5
-    container_name: elasticsearch
+    container_name: es
     environment:
       - ES_SETTING_DISCOVERY_TYPE=single-node
       - ES_SETTING_XPACK_SECURITY_ENABLED=false
@@ -96,16 +96,19 @@ services:
       - camunda
 
   experiment:
-    image: moritz148/measurementsgmt:c8.8-single
+    image: moritz148/measurementsgmt:c8.8-measuring
     container_name: experiment
     environment:
       - GRPC_ADDRESS=http://zeebe:26500
       - REST_ADDRESS=http://zeebe:8080
-      - PROCESS_INSTANCES=200
+      - PROCESS_INSTANCES=250
+      - PROCESS_ID=benchmark
     networks:
       - camunda
     depends_on:
       zeebe:
+        condition: service_healthy
+      connectors:
         condition: service_healthy
 
 networks:

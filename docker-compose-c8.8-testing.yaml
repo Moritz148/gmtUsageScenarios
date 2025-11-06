@@ -7,7 +7,7 @@ services:
   # -------------------------------------------------
   zeebe-1:
     image: camunda/zeebe:8.8.0
-    container_name: zeebe-1
+    container_name: node0
     restart: always
     environment:
       # --- Cluster-Konfiguration ---
@@ -16,18 +16,16 @@ services:
       - ZEEBE_BROKER_CLUSTER_REPLICATIONFACTOR=3
       - ZEEBE_BROKER_CLUSTER_PARTITIONSCOUNT=3
       - ZEEBE_BROKER_CLUSTER_NODEID=0
-      - ZEEBE_BROKER_CLUSTER_INITIALCONTACTPOINTS=zeebe-1:26502,zeebe-2:26502,zeebe-3:26502
+      - ZEEBE_BROKER_CLUSTER_INITIALCONTACTPOINTS=node0:26502,node1:26502,node2:26502
 
       # --- Gateway (nur hier aktiv) ---
-      - ZEEBE_BROKER_GATEWAY_ENABLE=true
-      - ZEEBE_BROKER_GATEWAY_NETWORK_PORT=26500
-      - ZEEBE_BROKER_GATEWAY_NETWORK_HOST=0.0.0.0
+      - ZEEBE_BROKER_GATEWAY_ENABLE=false
 
       # --- Netzwerk ---
       - ZEEBE_BROKER_NETWORK_COMMANDAPI_PORT=26501
       - ZEEBE_BROKER_NETWORK_INTERNALAPI_PORT=26502
       - ZEEBE_BROKER_NETWORK_MONITORINGAPI_PORT=9600
-
+      - ZEEBE_BROKER_NETWORK_MONITORINGAPI_HOST=0.0.0.0
       # --- Threads ---
       - ZEEBE_BROKER_THREADS_CPUTHREADCOUNT=2
       - ZEEBE_BROKER_THREADS_IOTHREADCOUNT=2
@@ -44,12 +42,16 @@ services:
 
       # --- Security ---
       - CAMUNDA_SECURITY_AUTHENTICATION_UNPROTECTEDAPI=true
-
+#      - ZEEBE_LOG_LEVEL=TRACE
+#    ports:
+#      - "26500:26500"
+##      - "8088:8080"
     healthcheck:
-      test: ["CMD-SHELL", "timeout 10s bash -c ':> /dev/tcp/127.0.0.1/9600' || exit 1"]
-      interval: 20s
-      timeout: 20s
-      retries: 10
+      test: ["CMD-SHELL", "echo OK"]
+      interval: 15s
+      timeout: 5s
+      retries: 20
+      start_period: 150s
 
     depends_on:
       elasticsearch:
@@ -62,7 +64,7 @@ services:
   # -------------------------------------------------
   zeebe-2:
     image: camunda/zeebe:8.8.0
-    container_name: zeebe-2
+    container_name: node1
     restart: always
     environment:
       - ZEEBE_BROKER_CLUSTER_CLUSTERNAME=zeebe-cluster
@@ -70,7 +72,7 @@ services:
       - ZEEBE_BROKER_CLUSTER_REPLICATIONFACTOR=3
       - ZEEBE_BROKER_CLUSTER_PARTITIONSCOUNT=3
       - ZEEBE_BROKER_CLUSTER_NODEID=1
-      - ZEEBE_BROKER_CLUSTER_INITIALCONTACTPOINTS=zeebe-1:26502,zeebe-2:26502,zeebe-3:26502
+      - ZEEBE_BROKER_CLUSTER_INITIALCONTACTPOINTS=node0:26502,node1:26502,node2:26502
 
       - ZEEBE_BROKER_GATEWAY_ENABLE=false
 
@@ -90,8 +92,15 @@ services:
       - CAMUNDA_DATA_SECONDARYSTORAGE_ELASTICSEARCH_URL=http://elasticsearch:9200
 
       - CAMUNDA_SECURITY_AUTHENTICATION_UNPROTECTEDAPI=true
+    healthcheck:
+      test: ["CMD-SHELL", "echo OK"]
+      interval: 15s
+      timeout: 5s
+      retries: 20
+      start_period: 150s
     depends_on:
-      - zeebe-1
+      zeebe-1:
+        condition: service_healthy
     networks:
       - camunda
 
@@ -100,7 +109,7 @@ services:
   # -------------------------------------------------
   zeebe-3:
     image: camunda/zeebe:8.8.0
-    container_name: zeebe-3
+    container_name: node2
     restart: always
     environment:
       - ZEEBE_BROKER_CLUSTER_CLUSTERNAME=zeebe-cluster
@@ -108,7 +117,7 @@ services:
       - ZEEBE_BROKER_CLUSTER_REPLICATIONFACTOR=3
       - ZEEBE_BROKER_CLUSTER_PARTITIONSCOUNT=3
       - ZEEBE_BROKER_CLUSTER_NODEID=2
-      - ZEEBE_BROKER_CLUSTER_INITIALCONTACTPOINTS=zeebe-1:26502,zeebe-2:26502,zeebe-3:26502
+      - ZEEBE_BROKER_CLUSTER_INITIALCONTACTPOINTS=node0:26502,node1:26502,node2:26502
 
       - ZEEBE_BROKER_GATEWAY_ENABLE=false
 
@@ -128,8 +137,15 @@ services:
       - CAMUNDA_DATA_SECONDARYSTORAGE_ELASTICSEARCH_URL=http://elasticsearch:9200
 
       - CAMUNDA_SECURITY_AUTHENTICATION_UNPROTECTEDAPI=true
+    healthcheck:
+      test: ["CMD-SHELL", "echo OK"]
+      interval: 15s
+      timeout: 5s
+      retries: 20
+      start_period: 150s
     depends_on:
-      - zeebe-1
+      zeebe-1:
+        condition: service_healthy
     networks:
       - camunda
 
@@ -138,16 +154,22 @@ services:
   # -------------------------------------------------
   connectors:
     image: camunda/connectors:8.8.0
-    container_name: connectors
+    container_name: conn
     restart: unless-stopped
     environment:
       - management.endpoints.web.exposure.include=health,configprops
       - management.endpoint.health.probes.enabled=true
       - camunda.client.mode=self-managed
-      - camunda.client.grpc-address=http://zeebe-1:26500
-      - camunda.client.rest-address=http://zeebe-1:8080
+      - camunda.client.grpc-address=http://zeebe-gateway:26500
+      - camunda.client.rest-address=http://zeebe-gateway:8080
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:8080/actuator/health/readiness" ]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
     depends_on:
-      zeebe-1:
+      zeebe-gateway:
         condition: service_healthy
     networks:
       - camunda
@@ -157,7 +179,7 @@ services:
   # -------------------------------------------------
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.17.5
-    container_name: elasticsearch
+    container_name: ES
     environment:
       - ES_SETTING_DISCOVERY_TYPE=single-node
       - ES_SETTING_XPACK_SECURITY_ENABLED=false
@@ -173,18 +195,62 @@ services:
     networks:
       - camunda
 
-  # -------------------------------------------------
-  # Experiment (dein Worker)
-  # -------------------------------------------------
-  experiment:
-    image: moritz148/measurementsgmt:c8.8-single
-    container_name: experiment
+  zeebe-gateway:
+    image: camunda/zeebe:8.8.0
+    container_name: zeebe-gateway
+    command: [ "/usr/local/bin/startup.sh", "--", "gateway" ]
+    restart: always
     environment:
-      - GRPC_ADDRESS=http://zeebe-1:26500
-      - REST_ADDRESS=http://zeebe-1:8080
-      - PROCESS_INSTANCES=200
+      - ZEEBE_STANDALONE_GATEWAY=true
+      - ZEEBE_LOG_LEVEL=info
+      - ZEEBE_GATEWAY_CLUSTER_CLUSTERNAME=zeebe-cluster
+      - ZEEBE_GATEWAY_CLUSTER_INITIALCONTACTPOINTS=node0:26502,node1:26502,node2:26502
+      - ZEEBE_GATEWAY_NETWORK_HOST=0.0.0.0
+      - ZEEBE_GATEWAY_NETWORK_PORT=26500
+      - ZEEBE_GATEWAY_MONITORING_ENABLED=true
+      - ZEEBE_GATEWAY_MONITORING_HOST=0.0.0.0
+      - ZEEBE_GATEWAY_MONITORING_PORT=9600
+      - CAMUNDA_SECURITY_AUTHENTICATION_UNPROTECTEDAPI=true
+      - ZEEBE_GATEWAY_SECURITY_AUTHENTICATION_MODE=none
+      - CAMUNDA_DATA_SECONDARYSTORAGE_ELASTICSEARCH_URL=http://elasticsearch:9200
+      - CAMUNDA_DATA_SCHEMA_MANAGEMENT_ENABLED=false
+    ports:
+      - "26500:26500"
+#      - "9600:9600"
+    healthcheck:
+      test: [ "CMD-SHELL", "timeout 10s bash -c ':> /dev/tcp/127.0.0.1/9600' || exit 1" ]
+      interval: 30s
+      timeout: 10s
+      retries: 20
+      start_period: 60s
     depends_on:
       zeebe-1:
+        condition: service_healthy
+      zeebe-2:
+        condition: service_healthy
+      zeebe-3:
+        condition: service_healthy
+    networks:
+      - camunda
+
+  experiment:
+    image: moritz148/measurementsgmt:c8.8-measuring
+    container_name: experiment
+    environment:
+      - GRPC_ADDRESS=http://zeebe-gateway:26500
+      - REST_ADDRESS=http://zeebe-gateway:8080
+      - PROCESS_INSTANCES=250
+      - PROCESS_ID=benchmark
+    depends_on:
+      zeebe-1:
+        condition: service_healthy
+      connectors:
+        condition: service_healthy
+      zeebe-2:
+        condition: service_healthy
+      zeebe-3:
+        condition: service_healthy
+      zeebe-gateway:
         condition: service_healthy
     networks:
       - camunda
