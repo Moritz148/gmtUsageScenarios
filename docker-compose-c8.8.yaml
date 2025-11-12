@@ -10,12 +10,12 @@ services:
       - CAMUNDA_SECURITY_AUTHORIZATIONS_ENABLED=false
       - CAMUNDA_SECURITY_AUTHENTICATION_UNPROTECTEDAPI=true
       - CAMUNDA_DATA_SECONDARYSTORAGE_ELASTICSEARCH_URL=http://elasticsearch:9200
-      - ZEEBE_BROKER_EXPORTERS_CAMUNDAEXPORTER_ARGS_CREATESCHEMA=false
+#      - ZEEBE_BROKER_EXPORTERS_CAMUNDAEXPORTER_ARGS_CREATESCHEMA=false
       - ZEEBE_BROKER_EXPORTERS_CAMUNDAEXPORTER_CLASSNAME=io.camunda.exporter.CamundaExporter
       - ZEEBE_GATEWAY_SECURITY_AUTHENTICATION_MODE=none
 #      - ZEEBE_LOG_LEVEL=TRACE
-    ports:
-      - "26500:26500"
+#    ports:
+#      - "26500:26500"
     healthcheck:
       test: [ "CMD-SHELL", "timeout 20s bash -c ':> /dev/tcp/127.0.0.1/9600' || exit 1" ]
       interval: 20s
@@ -76,7 +76,7 @@ services:
     environment:
       - GRPC_ADDRESS=http://zeebe:26500
       - REST_ADDRESS=http://zeebe:8080
-      - PROCESS_INSTANCES=1000
+      - PROCESS_INSTANCES=150
       - PROCESS_ID=benchmark
     networks:
       - camunda
