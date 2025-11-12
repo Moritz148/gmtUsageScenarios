@@ -1,52 +1,27 @@
-# While the Docker images themselves are supported for production usage,
-# this docker-compose.yaml is designed to be used by developers to run
-# an environment locally. It is not designed to be used in production.
-# We recommend to use Kubernetes in production with our Helm Charts:
-# https://docs.camunda.io/docs/self-managed/setup/install/
-# For local development, we recommend using KIND instead of `docker-compose`:
-# https://docs.camunda.io/docs/self-managed/setup/deploy/local/local-kubernetes-cluster/
 
-# This is a lightweight configuration with Orchestration (Zeebe + Operate + Tasklist), Connectors, and Elasticsearch
-# See docker-compose-full.yaml for a configuration that also includes Optimize, Identity, Keycloak, Web Modeler, and Console.
 services:
   zeebe:
     image: camunda/zeebe:8.8.0
     container_name: zeebe
     restart: always
     environment:
-      # --- Cluster-Konfiguration ---
-      - ZEEBE_BROKER_CLUSTER_CLUSTERSIZE=1
-      - ZEEBE_BROKER_CLUSTER_PARTITIONSCOUNT=1
-      - ZEEBE_BROKER_CLUSTER_REPLICATIONFACTOR=1
-      - ZEEBE_BROKER_CLUSTER_NODEID=0
       - ZEEBE_BROKER_GATEWAY_ENABLE=true
-
-      # --- Thread-Konfiguration ---
-      - ZEEBE_BROKER_THREADS_CPUTHREADCOUNT=2
-      - ZEEBE_BROKER_THREADS_IOTHREADCOUNT=2
-
-      # --- Daten ---
-      - ZEEBE_BROKER_DATA_DIRECTORY=data
-      - ZEEBE_BROKER_DATA_SNAPSHOTPERIOD=15m
-      - ZEEBE_BROKER_DATA_LOGSEGMENTSIZE=128MB
-
-      # --- Security ---
+      - CAMUNDA_API_GRPC_SECURITY_AUTHENTICATION_MODE=none
+      - CAMUNDA_SECURITY_AUTHORIZATIONS_ENABLED=false
       - CAMUNDA_SECURITY_AUTHENTICATION_UNPROTECTEDAPI=true
-      - ZEEBE_BROKER_EXPORTERS_CAMUNDAEXPORTER_ARGS_CREATESCHEMA=false
       - CAMUNDA_DATA_SECONDARYSTORAGE_ELASTICSEARCH_URL=http://elasticsearch:9200
+      - ZEEBE_BROKER_EXPORTERS_CAMUNDAEXPORTER_ARGS_CREATESCHEMA=false
       - ZEEBE_BROKER_EXPORTERS_CAMUNDAEXPORTER_CLASSNAME=io.camunda.exporter.CamundaExporter
+      - ZEEBE_GATEWAY_SECURITY_AUTHENTICATION_MODE=none
 #      - ZEEBE_LOG_LEVEL=TRACE
-
     ports:
-      - "26500:26500"  # gRPC API (zbctl, Clients)
-#      - "9600:9600"    # Management API (Prometheus, Health)
-#    volumes:
-#      - ./zeebe_data:/usr/local/zeebe/data
+      - "26500:26500"
     healthcheck:
-      test: [ "CMD-SHELL", "timeout 10s bash -c ':> /dev/tcp/127.0.0.1/9600' || exit 1" ]
+      test: [ "CMD-SHELL", "timeout 20s bash -c ':> /dev/tcp/127.0.0.1/9600' || exit 1" ]
       interval: 20s
       timeout: 20s
       retries: 10
+      start_period: 30s
     networks:
       - camunda
     depends_on:
@@ -101,7 +76,7 @@ services:
     environment:
       - GRPC_ADDRESS=http://zeebe:26500
       - REST_ADDRESS=http://zeebe:8080
-      - PROCESS_INSTANCES=250
+      - PROCESS_INSTANCES=1000
       - PROCESS_ID=benchmark
     networks:
       - camunda
