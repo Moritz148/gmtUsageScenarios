@@ -2,7 +2,7 @@ name: C88 Experiment
 author: Moritz Schwarz <moritz.schwarz@envite.de>
 description: usage_scenario for C8.8 Experiment
 
-compose-file: !include docker-compose-c8.8.yaml
+compose-file: !include docker-compose-c8.8-single-broker.yaml
 
 services:
   experiment:

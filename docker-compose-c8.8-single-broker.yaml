@@ -1,18 +1,17 @@
 
 services:
   zeebe:
-    image: camunda/zeebe:8.8.0
+    image: camunda/camunda:8.8.2
     container_name: zeebe
     restart: always
     environment:
+      - SPRING_PROFILES_ACTIVE=broker
       - ZEEBE_BROKER_GATEWAY_ENABLE=true
-      - CAMUNDA_API_GRPC_SECURITY_AUTHENTICATION_MODE=none
       - CAMUNDA_SECURITY_AUTHORIZATIONS_ENABLED=false
       - CAMUNDA_SECURITY_AUTHENTICATION_UNPROTECTEDAPI=true
       - CAMUNDA_DATA_SECONDARYSTORAGE_ELASTICSEARCH_URL=http://elasticsearch:9200
 #      - ZEEBE_BROKER_EXPORTERS_CAMUNDAEXPORTER_ARGS_CREATESCHEMA=false
       - ZEEBE_BROKER_EXPORTERS_CAMUNDAEXPORTER_CLASSNAME=io.camunda.exporter.CamundaExporter
-      - ZEEBE_GATEWAY_SECURITY_AUTHENTICATION_MODE=none
 #      - ZEEBE_LOG_LEVEL=TRACE
 #    ports:
 #      - "26500:26500"
@@ -28,32 +27,9 @@ services:
       elasticsearch:
         condition: service_healthy
 
-  # Camunda Connectors - executes outbound and inbound connector logic
-  # Docs: https://docs.camunda.io/docs/self-managed/connectors-deployment/connectors-configuration/
-  connectors:
-    image: camunda/connectors:8.8.0
-    container_name: conn
-    environment:
-      - management.endpoints.web.exposure.include=health,configprops
-      - management.endpoint.health.probes.enabled=true
-      - camunda.client.mode=self-managed
-      - camunda.client.grpc-address=http://zeebe:26500
-      - camunda.client.rest-address=http://zeebe:8080
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:8080/actuator/health/readiness"]
-      interval: 30s
-      timeout: 1s
-      retries: 5
-      start_period: 30s
-    networks:
-      - camunda
-    depends_on:
-      zeebe:
-        condition: service_healthy
 
   elasticsearch: # https://hub.docker.com/_/elasticsearch
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.17.5
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.17.10
     container_name: es
     environment:
       - ES_SETTING_DISCOVERY_TYPE=single-node
@@ -76,18 +52,15 @@ services:
     environment:
       - GRPC_ADDRESS=http://zeebe:26500
       - REST_ADDRESS=http://zeebe:8080
-      - PROCESS_INSTANCES=150
+      - PROCESS_INSTANCES=250
       - PROCESS_ID=benchmark
     networks:
       - camunda
     depends_on:
       zeebe:
         condition: service_healthy
-      connectors:
-        condition: service_healthy
+#      connectors:
+#        condition: service_healthy
 
 networks:
   camunda:
-
-
-
