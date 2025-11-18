@@ -155,27 +155,27 @@ services:
   # -------------------------------------------------
   # Connectors
   # -------------------------------------------------
-  connectors:
-    image: camunda/connectors:8.8.0
-    container_name: conn
-    restart: unless-stopped
-    environment:
-      - management.endpoints.web.exposure.include=health,configprops
-      - management.endpoint.health.probes.enabled=true
-      - camunda.client.mode=self-managed
-      - camunda.client.grpc-address=http://zeebe-gateway:26500
-      - camunda.client.rest-address=http://zeebe-gateway:8080
-    healthcheck:
-      test: [ "CMD-SHELL", "curl -f http://localhost:8080/actuator/health/readiness" ]
-      interval: 30s
-      timeout: 5s
-      retries: 5
-      start_period: 60s
-    depends_on:
-      zeebe-gateway:
-        condition: service_healthy
-    networks:
-      - camunda
+#  connectors:
+#    image: camunda/connectors:8.8.0
+#    container_name: conn
+#    restart: unless-stopped
+#    environment:
+#      - management.endpoints.web.exposure.include=health,configprops
+#      - management.endpoint.health.probes.enabled=true
+#      - camunda.client.mode=self-managed
+#      - camunda.client.grpc-address=http://zeebe-gateway:26500
+#      - camunda.client.rest-address=http://zeebe-gateway:8080
+#    healthcheck:
+#      test: [ "CMD-SHELL", "curl -f http://localhost:8080/actuator/health/readiness" ]
+#      interval: 30s
+#      timeout: 5s
+#      retries: 5
+#      start_period: 60s
+#    depends_on:
+#      zeebe-gateway:
+#        condition: service_healthy
+#    networks:
+#      - camunda
 
   # -------------------------------------------------
   # Elasticsearch
@@ -215,6 +215,10 @@ services:
       - ZEEBE_GATEWAY_MONITORING_PORT=9600
       - CAMUNDA_SECURITY_AUTHENTICATION_UNPROTECTEDAPI=true
       - ZEEBE_GATEWAY_SECURITY_AUTHENTICATION_MODE=none
+      - CAMUNDA_SECURITY_AUTHORIZATIONS_ENABLED=false
+      - CAMUNDA_API_GRPC_SECURITY_AUTHENTICATION_MODE=none
+      - ZEEBE_BROKER_EXPORTERS_CAMUNDAEXPORTER_CLASSNAME=io.camunda.exporter.CamundaExporter
+      - ZEEBE_BROKER_EXPORTERS_CAMUNDAEXPORTER_ARGS_CREATESCHEMA=false
       - CAMUNDA_DATA_SECONDARYSTORAGE_ELASTICSEARCH_URL=http://elasticsearch:9200
       - CAMUNDA_DATA_SCHEMA_MANAGEMENT_ENABLED=false
     ports:
@@ -248,8 +252,8 @@ services:
     depends_on:
       zeebe-1:
         condition: service_healthy
-      connectors:
-        condition: service_healthy
+#      connectors:
+#        condition: service_healthy
       zeebe-2:
         condition: service_healthy
       zeebe-3:
