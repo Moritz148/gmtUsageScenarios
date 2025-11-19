@@ -6,6 +6,7 @@ services:
     restart: always
     environment:
       - SPRING_PROFILES_ACTIVE=broker
+#      - CAMUNDA_CLUSTER_PARTITIONCOUNT=3
       - ZEEBE_BROKER_GATEWAY_ENABLE=true
       - CAMUNDA_SECURITY_AUTHORIZATIONS_ENABLED=false
       - CAMUNDA_SECURITY_AUTHENTICATION_UNPROTECTEDAPI=true
@@ -48,12 +49,15 @@ services:
 
   experiment:
     image: moritz148/measurementsgmt:c8.8-measuring
+#    image: moritz148/measurementsgmt:c8.8-measuring-withresult
     container_name: experiment
     environment:
       - GRPC_ADDRESS=http://zeebe:26500
       - REST_ADDRESS=http://zeebe:8080
-      - PROCESS_INSTANCES=250
+      - PROCESS_INSTANCES=1000
       - PROCESS_ID=benchmark
+      - LOGGING_LEVEL_APP=info
+      - LOGGING_LEVEL_ROOT=info
     networks:
       - camunda
     depends_on:
