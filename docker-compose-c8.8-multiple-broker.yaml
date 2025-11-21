@@ -27,11 +27,16 @@ services:
       - ZEEBE_BROKER_EXPORTERS_CAMUNDAEXPORTER_CLASSNAME=io.camunda.exporter.CamundaExporter
 
     healthcheck:
-      test: ["CMD-SHELL", "timeout 15s bash -c ':> /dev/tcp/127.0.0.1/9600' || exit 1"]
-      interval: 20s
-      timeout: 20s
-      retries: 10
-      start_period: 60s
+      test: ["CMD-SHELL", "bash -c ':> /dev/tcp/127.0.0.1/9600' || exit 1"]
+#      interval: 20s
+#      timeout: 20s
+#      retries: 10
+#      start_period: 60s
+      interval: 24h
+      #      retries: 30
+      start_period: 120s
+      start_interval: 1s
+      timeout: 1s
 
     networks:
       - camunda
@@ -60,11 +65,16 @@ services:
       - CAMUNDA_DATA_SECONDARYSTORAGE_ELASTICSEARCH_URL=http://elasticsearch:9200
       - ZEEBE_BROKER_EXPORTERS_CAMUNDAEXPORTER_CLASSNAME=io.camunda.exporter.CamundaExporter
     healthcheck:
-      test: ["CMD-SHELL", "timeout 15s bash -c ':> /dev/tcp/127.0.0.1/9600' || exit 1"]
-      interval: 20s
-      timeout: 20s
-      retries: 10
-      start_period: 30s
+      test: ["CMD-SHELL", "bash -c ':> /dev/tcp/127.0.0.1/9600' || exit 1"]
+#      interval: 20s
+#      timeout: 20s
+#      retries: 10
+#      start_period: 30s
+      interval: 24h
+        #      retries: 30
+      start_period: 120s
+      start_interval: 1s
+      timeout: 1s
     networks:
       - camunda
     depends_on:
@@ -92,11 +102,16 @@ services:
       - CAMUNDA_DATA_SECONDARYSTORAGE_ELASTICSEARCH_URL=http://elasticsearch:9200
       - ZEEBE_BROKER_EXPORTERS_CAMUNDAEXPORTER_CLASSNAME=io.camunda.exporter.CamundaExporter
     healthcheck:
-      test: ["CMD-SHELL", "timeout 15s bash -c ':> /dev/tcp/127.0.0.1/9600' || exit 1"]
-      interval: 20s
-      timeout: 20s
-      retries: 10
-      start_period: 30s
+      test: ["CMD-SHELL", "bash -c ':> /dev/tcp/127.0.0.1/9600' || exit 1"]
+#      interval: 20s
+#      timeout: 20s
+#      retries: 10
+#      start_period: 30s
+      interval: 24h
+      #      retries: 30
+      start_period: 120s
+      start_interval: 1s
+      timeout: 1s
     networks:
       - camunda
     depends_on:
@@ -114,10 +129,11 @@ services:
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:9200/_cat/health | grep -q green"]
-      interval: 20s
-      retries: 30
+      interval: 24h
+#      retries: 30
       start_period: 120s
-      timeout: 10s
+      start_interval: 1s
+      timeout: 1s
     networks:
       - camunda
 
