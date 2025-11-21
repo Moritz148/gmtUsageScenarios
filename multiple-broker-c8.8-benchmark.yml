@@ -2,7 +2,7 @@ name: Camunda 8 Messung - multiple Broker - benchmark
 author: Moritz Schwarz <moritz.schwarz@envite.de>
 description: usage_scenario for camunda8experiment
 
-compose-file: !include docker-compose-c8.8-multiple-broker.yaml
+compose-file: !include docker-compose-c8.8-single-broker.yaml
 
 services:
   experiment:
@@ -11,8 +11,8 @@ services:
     container_name: experiment
     command: /bin/sh
     environment:
-      - GRPC_ADDRESS=http://zeebe-1:26500
-      - REST_ADDRESS=http://zeebe-1:8080
+      - GRPC_ADDRESS=http://zeebe:26500
+      - REST_ADDRESS=http://zeebe:8080
       - PROCESS_INSTANCES=100
       - PROCESS_ID=benchmark
       - LOGGING_LEVEL_APP=info
@@ -20,12 +20,12 @@ services:
     networks:
       - camunda
     depends_on:
-      zeebe-1:
+      zeebe:
         condition: service_healthy
-      zeebe-2:
-        condition: service_healthy
-      zeebe-3:
-        condition: service_healthy
+#      zeebe-2:
+#        condition: service_healthy
+#      zeebe-3:
+#        condition: service_healthy
 
 flow:
   - name: experiment
