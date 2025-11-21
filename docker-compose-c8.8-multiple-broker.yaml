@@ -121,26 +121,26 @@ services:
     networks:
       - camunda
 
-  experiment:
-    image: moritz148/measurementsgmt:c8.8-measuring-withresult
-#    image: moritz148/measurementsgmt:c8.8-measuring
-    container_name: experiment
-    environment:
-      - GRPC_ADDRESS=http://zeebe-1:26500
-      - REST_ADDRESS=http://zeebe-1:8080
-      - PROCESS_INSTANCES=250
-      - PROCESS_ID=benchmark
-      - LOGGING_LEVEL_APP=info
-      - LOGGING_LEVEL_ROOT=info
-    networks:
-      - camunda
-    depends_on:
-      zeebe-1:
-        condition: service_healthy
-      zeebe-2:
-        condition: service_healthy
-      zeebe-3:
-        condition: service_healthy
+#  experiment:
+#    image: moritz148/measurementsgmt:c8.8-measuring-withresult
+##    image: moritz148/measurementsgmt:c8.8-measuring
+#    container_name: experiment
+#    environment:
+#      - GRPC_ADDRESS=http://zeebe-1:26500
+#      - REST_ADDRESS=http://zeebe-1:8080
+#      - PROCESS_INSTANCES=1000
+#      - PROCESS_ID=benchmark
+#      - LOGGING_LEVEL_APP=info
+#      - LOGGING_LEVEL_ROOT=info
+#    networks:
+#      - camunda
+#    depends_on:
+#      zeebe-1:
+#        condition: service_healthy
+#      zeebe-2:
+#        condition: service_healthy
+#      zeebe-3:
+#        condition: service_healthy
 
 networks:
   camunda:
