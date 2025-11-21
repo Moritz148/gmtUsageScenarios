@@ -127,13 +127,13 @@ services:
       - ES_SETTING_CLUSTER_ROUTING_ALLOCATION_DISK_THRESHOLD__ENABLED=false
       - ES_SETTING_LOGGER_ORG_ELASTICSEARCH_DEPRECATION="OFF"
     restart: unless-stopped
-#    healthcheck:
-#      test: ["CMD-SHELL", "curl -f http://localhost:9200/_cat/health | grep -q green"]
-#      interval: 24h
-##      retries: 30
-#      start_period: 120s
-#      start_interval: 1s
-#      timeout: 1s
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9200/_cat/health | grep -q green"]
+      interval: 24h
+#      retries: 30
+      start_period: 120s
+      start_interval: 1s
+      timeout: 1s
     networks:
       - camunda
 
