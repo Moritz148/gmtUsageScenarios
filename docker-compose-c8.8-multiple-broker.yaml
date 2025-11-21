@@ -125,7 +125,7 @@ services:
       - ES_SETTING_DISCOVERY_TYPE=single-node
       - ES_SETTING_XPACK_SECURITY_ENABLED=false
       - ES_SETTING_CLUSTER_ROUTING_ALLOCATION_DISK_THRESHOLD__ENABLED=false
-      - ES_SETTING_LOGGER_ORG_ELASTICSEARCH_DEPRECATION="OFF"
+#      - ES_SETTING_LOGGER_ORG_ELASTICSEARCH_DEPRECATION="OFF"
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:9200/_cat/health | grep -q green"]
