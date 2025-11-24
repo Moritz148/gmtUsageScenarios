@@ -40,9 +40,9 @@ services:
 
     networks:
       - camunda
-#    depends_on:
-#      elasticsearch:
-#        condition: service_healthy
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
 
   zeebe-2:
     image: camunda/camunda:8.8.2
@@ -77,9 +77,9 @@ services:
       timeout: 1s
     networks:
       - camunda
-#    depends_on:
-#      elasticsearch:
-#        condition: service_healthy
+    depends_on:
+      zeebe-1:
+        condition: service_healthy
 
   zeebe-3:
     image: camunda/camunda:8.8.2
@@ -114,9 +114,9 @@ services:
       timeout: 1s
     networks:
       - camunda
-#    depends_on:
-#      elasticsearch:
-#        condition: service_healthy
+    depends_on:
+      zeebe-1:
+        condition: service_healthy
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.17.10
@@ -130,7 +130,7 @@ services:
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:9200/_cat/health | grep -q green"]
       interval: 24h
-#      retries: 30
+      retries: 10
       start_period: 120s
       start_interval: 1s
       timeout: 1s
