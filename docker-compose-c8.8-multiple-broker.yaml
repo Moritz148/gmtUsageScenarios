@@ -4,7 +4,7 @@ services:
     container_name: zeebe-1
     restart: always
     environment:
-     - SPRING_PROFILES_ACTIVE=broker
+      - SPRING_PROFILES_ACTIVE=broker
       - ZEEBE_BROKER_CLUSTER_CLUSTERNAME=zeebe-cluster
       - ZEEBE_BROKER_CLUSTER_NODEID=0
       - ZEEBE_BROKER_CLUSTER_PARTITIONSCOUNT=3
@@ -49,7 +49,7 @@ services:
     container_name: zeebe-2
     restart: always
     environment:
-     - SPRING_PROFILES_ACTIVE=broker
+      - SPRING_PROFILES_ACTIVE=broker
       - ZEEBE_BROKER_CLUSTER_CLUSTERNAME=zeebe-cluster
       - ZEEBE_BROKER_CLUSTER_NODEID=1
       - ZEEBE_BROKER_CLUSTER_PARTITIONSCOUNT=3
@@ -89,7 +89,7 @@ services:
     container_name: zeebe-3
     restart: always
     environment:
-     - SPRING_PROFILES_ACTIVE=broker
+      - SPRING_PROFILES_ACTIVE=broker
       - ZEEBE_BROKER_CLUSTER_CLUSTERNAME=zeebe-cluster
       - ZEEBE_BROKER_CLUSTER_NODEID=2
       - ZEEBE_BROKER_CLUSTER_PARTITIONSCOUNT=3
