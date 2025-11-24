@@ -78,8 +78,11 @@ services:
     networks:
       - camunda
     depends_on:
-      zeebe-1:
+      elasticsearch:
         condition: service_healthy
+    # depends_on:
+    #   zeebe-1:
+    #     condition: service_healthy
 
   zeebe-3:
     image: camunda/camunda:8.8.2
@@ -115,8 +118,11 @@ services:
     networks:
       - camunda
     depends_on:
-      zeebe-1:
+      elasticsearch:
         condition: service_healthy
+    # depends_on:
+    #   zeebe-1:
+    #     condition: service_healthy
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.17.10
