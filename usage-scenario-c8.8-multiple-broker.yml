@@ -13,7 +13,7 @@ services:
     environment:
       - GRPC_ADDRESS=http://zeebe-1:26500
       - REST_ADDRESS=http://zeebe-1:8080
-      - PROCESS_INSTANCES=1000
+      - PROCESS_INSTANCES=500
       - PROCESS_ID=benchmark
       - LOGGING_LEVEL_APP=info
       - LOGGING_LEVEL_ROOT=info
