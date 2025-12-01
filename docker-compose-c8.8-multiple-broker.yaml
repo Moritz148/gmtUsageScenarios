@@ -162,7 +162,7 @@ services:
       - LOGGING_LEVEL_ROOT=off
     networks:
       - camunda
-    mem_limit: 26214400
+    mem_limit: 500M
     cpus: 0.5
     depends_on:
       zeebe-1:
