@@ -25,13 +25,6 @@ services:
       - CAMUNDA_DATA_SECONDARYSTORAGE_ELASTICSEARCH_URL=http://elasticsearch:9200
       #- ZEEBE_BROKER_EXPORTERS_CAMUNDAEXPORTER_ARGS_CREATESCHEMA=false
       - ZEEBE_BROKER_EXPORTERS_CAMUNDAEXPORTER_CLASSNAME=io.camunda.exporter.CamundaExporter
-    deploy:
-    resources:
-      limits:
-        memory: "1250M"
-        cpus: "1.0"
-      reservations:
-        memory: "1250M"
     healthcheck:
       test: ["CMD-SHELL", "bash -c ':> /dev/tcp/127.0.0.1/9600' || exit 1"]
 #      interval: 20s
@@ -43,7 +36,8 @@ services:
       start_period: 120s
       start_interval: 1s
       timeout: 1s
-
+    mem_limit: 1342177280
+    cpus: 3
     networks:
       - camunda
     depends_on:
@@ -81,13 +75,8 @@ services:
       start_period: 120s
       start_interval: 1s
       timeout: 1s
-    deploy:
-    resources:
-      limits:
-        memory: "1250M"
-        cpus: "1.0"
-      reservations:
-        memory: "1250M"
+    mem_limit: 1342177280
+    cpus: 3
     networks:
       - camunda
     depends_on:
@@ -128,12 +117,8 @@ services:
       start_period: 120s
       start_interval: 1s
       timeout: 1s
-    resources:
-      limits:
-        memory: "1250M"
-        cpus: "1.0"
-      reservations:
-        memory: "1250M"
+    mem_limit: 1342177280
+    cpus: 3
     networks:
       - camunda
     depends_on:
@@ -159,11 +144,8 @@ services:
       start_period: 120s
       start_interval: 1s
       timeout: 1s
-    deploy:
-      resources:
-        limits:
-          memory: "2G"
-          cpus: "1.5"    
+    mem_limit: 2147483648
+    cpus: 2
     networks:
       - camunda
 
@@ -180,11 +162,8 @@ services:
       - LOGGING_LEVEL_ROOT=off
     networks:
       - camunda
-    deploy:
-      resources:
-        limits:
-          memory: "250M"
-          cpus: "0.5"
+    mem_limit: 26214400
+    cpus: 0.5
     depends_on:
       zeebe-1:
         condition: service_healthy

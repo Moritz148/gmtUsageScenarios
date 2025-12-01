@@ -16,7 +16,7 @@ services:
       - PROCESS_INSTANCES=1000
       - PROCESS_ID=benchmark
       - LOGGING_LEVEL_APP=info
-      - LOGGING_LEVEL_ROOT=info
+      - LOGGING_LEVEL_ROOT=off
     networks:
       - camunda
     depends_on:
