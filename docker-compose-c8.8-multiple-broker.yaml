@@ -36,7 +36,7 @@ services:
       start_period: 120s
       start_interval: 1s
       timeout: 1s
-    mem_limit: 1342177280
+    mem_limit: 2G
     cpus: 3
     networks:
       - camunda
@@ -75,7 +75,7 @@ services:
       start_period: 120s
       start_interval: 1s
       timeout: 1s
-    mem_limit: 1342177280
+    mem_limit: 2G
     cpus: 3
     networks:
       - camunda
@@ -117,7 +117,7 @@ services:
       start_period: 120s
       start_interval: 1s
       timeout: 1s
-    mem_limit: 1342177280
+    mem_limit: 2G
     cpus: 3
     networks:
       - camunda
@@ -144,7 +144,7 @@ services:
       start_period: 120s
       start_interval: 1s
       timeout: 1s
-    mem_limit: 2147483648
+    mem_limit: 3G
     cpus: 2
     networks:
       - camunda
@@ -162,7 +162,7 @@ services:
       - LOGGING_LEVEL_ROOT=off
     networks:
       - camunda
-    mem_limit: 500M
+    mem_limit: 1G
     cpus: 0.5
     depends_on:
       zeebe-1:
