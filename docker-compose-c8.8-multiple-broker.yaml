@@ -36,8 +36,8 @@ services:
       start_period: 120s
       start_interval: 1s
       timeout: 1s
-    mem_limit: 2G
-    cpus: 3
+    mem_limit: 3G
+    cpus: 4
     networks:
       - camunda
     depends_on:
@@ -75,8 +75,8 @@ services:
       start_period: 120s
       start_interval: 1s
       timeout: 1s
-    mem_limit: 2G
-    cpus: 3
+    mem_limit: 3G
+    cpus: 4
     networks:
       - camunda
     depends_on:
@@ -117,8 +117,8 @@ services:
       start_period: 120s
       start_interval: 1s
       timeout: 1s
-    mem_limit: 2G
-    cpus: 3
+    mem_limit: 3G
+    cpus: 4
     networks:
       - camunda
     depends_on:
@@ -145,7 +145,7 @@ services:
       start_interval: 1s
       timeout: 1s
     mem_limit: 3G
-    cpus: 2
+    cpus: 3
     networks:
       - camunda
 
@@ -162,8 +162,8 @@ services:
       - LOGGING_LEVEL_ROOT=off
     networks:
       - camunda
-    mem_limit: 1G
-    cpus: 0.5
+    mem_limit: 1.5G
+    cpus: 1
     depends_on:
       zeebe-1:
         condition: service_healthy
