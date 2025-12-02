@@ -7,7 +7,7 @@ compose-file: !include docker-compose-c8.8-multiple-broker.yaml
 services:
   experiment:
     #    image: moritz148/measurementsgmt:c8.8-measuring-withresult
-    image: moritz148/measurementsgmt:c8.8-measuring
+    image: moritz148/measurementsgmt:c8.8-measuring-test
     container_name: experiment
     command: /bin/sh
     environment:
