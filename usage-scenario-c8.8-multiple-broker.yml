@@ -7,13 +7,13 @@ compose-file: !include docker-compose-c8.8-multiple-broker.yaml
 services:
   experiment:
     #    image: moritz148/measurementsgmt:c8.8-measuring-withresult
-    image: moritz148/measurementsgmt:c8.8-measuring-test
+    image: moritz148/measurementsgmt:c8.8-measuring
     container_name: experiment
     command: /bin/sh
     environment:
       - GRPC_ADDRESS=http://zeebe-1:26500
       - REST_ADDRESS=http://zeebe-1:8080
-      - PROCESS_INSTANCES=2500
+      - PROCESS_INSTANCES=500
       - PROCESS_ID=benchmark
       - LOGGING_LEVEL_APP=info
       - LOGGING_LEVEL_ROOT=off
