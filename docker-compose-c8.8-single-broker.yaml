@@ -1,8 +1,8 @@
 
 services:
-  zeebe:
+  zeebe-1:
     image: camunda/camunda:8.8.2
-    container_name: zeebe
+    container_name: zeebe-1
     restart: always
     environment:
       - SPRING_PROFILES_ACTIVE=broker
@@ -52,8 +52,8 @@ services:
 ##    image: moritz148/measurementsgmt:c8.8-measuring-withresult
 #    container_name: experiment
 #    environment:
-#      - GRPC_ADDRESS=http://zeebe:26500
-#      - REST_ADDRESS=http://zeebe:8080
+#      - GRPC_ADDRESS=http://zeebe-1:26500
+#      - REST_ADDRESS=http://zeebe-1:8080
 #      - PROCESS_INSTANCES=1000
 #      - PROCESS_ID=benchmark
 #      - LOGGING_LEVEL_APP=info
@@ -61,7 +61,7 @@ services:
 #    networks:
 #      - camunda
 #    depends_on:
-#      zeebe:
+#      zeebe-1:
 #        condition: service_healthy
 ##      connectors:
 ##        condition: service_healthy
