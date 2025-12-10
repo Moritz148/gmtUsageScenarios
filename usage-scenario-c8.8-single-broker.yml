@@ -22,10 +22,7 @@ services:
     depends_on:
       zeebe-1:
        condition: service_healthy
-      zeebe-2:
-       condition: service_healthy
-      zeebe-3:
-       condition: service_healthy
+
 
 flow:
   - name: experiment
